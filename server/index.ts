@@ -4,6 +4,7 @@ import bodyParser from "body-parser"
 import { Post } from "../shared/types"
 
 const categories = require("./categories.json")
+const comments = require("./comments.json")
 const posts = require("./posts.json")
 const app = express()
 
@@ -27,10 +28,17 @@ app.get("/categories", (_, res) => {
 })
 
 app.get("/categories/:id", (req, res) => {
-  const { id } = req.params
-  const found = posts.filter(({ category }: Post) => category === id)
+  const found = posts.filter(
+    ({ category: id }: Post) => id === req.params.id
+  )
   const categoryPosts = [...found, ...found, ...found]
   return res.json(categoryPosts)
+})
+
+app.get("/comments/:post", (req, res) => {
+  const postId = Number(req.params.post)
+  const found = comments.filter(({ post }) => post === postId)
+  return res.json(found)
 })
 
 app.listen(port, () =>
